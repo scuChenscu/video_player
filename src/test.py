@@ -1,9 +1,9 @@
 import sys
 
-from PyQt5.QtCore import QUrl, QTimer
+from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
-from PyQt5.QtWidgets import QApplication, QFileDialog, QPushButton
+from PyQt5.QtWidgets import QApplication, QFileDialog
 from PyQt5.QtWidgets import QMainWindow
 from video_player import Ui_video_player  # 加载ui布局
 
@@ -11,13 +11,21 @@ from video_player import Ui_video_player  # 加载ui布局
 class test(QMainWindow, Ui_video_player):
     def __init__(self, *args, **kwargs):
         super(test, self).__init__(*args, **kwargs)
+        self.player = QMediaPlayer()
         self.flag = 0  # 用于获取视频全长度
         self.setupUi(self)  # 初始化ui
         self.bind()  # 绑定事件
+        self.rate_list = [0.25, 0.5, 1, 1.25, 1.5, 2, 2.5]
+        # 记录下标
+        self.fastest_rate = len(self.rate_list) - 1
+        self.slowest_rate = 0
+        self.index = 2
 
     def bind(self):
         self.upload_delete_button.clicked.connect(self.upload_file)
         self.on_off_button.clicked.connect(self.play_pause)  # 播放和暂停
+        self.back_button.clicked.connect(self.jog_rate)  # 慢倍速
+        self.forward_button.clicked.connect(self.accelerate)  # 快倍速
 
     def upload_file(self):
         file = QFileDialog.getOpenFileName(self, "选择文件", "C:/Users/陈键淞/Desktop", " MP4 Files(*.mp4);;AVI Files(*.avi)")
@@ -26,6 +34,7 @@ class test(QMainWindow, Ui_video_player):
             self.player.setVideoOutput(self.video_play_widget)  # 视频播放输出的widget
             self.player.setMedia(QMediaContent(QUrl.fromLocalFile(file[0])))  # 选取视频文件
             self.player.setVolume(50)  # 设置初始播放音量
+            self.player.setPlaybackRate(self.rate_list[self.index])  # 设置初始播放速度
             self.player.positionChanged.connect(self.show_video_slider)  # 视频进度
             self.volume_slider.valueChanged.connect(self.drag_volume_slider)  # 拖动音量条调节音量
             self.timer_slider.sliderMoved.connect(self.drag_video_slider)  # 拖动进度条改变播放进度
@@ -85,6 +94,20 @@ class test(QMainWindow, Ui_video_player):
 
     def drag_video_slider_over(self):
         self.player.play()
+
+    def jog_rate(self):
+        if self.index > self.slowest_rate:
+            self.index -= 1
+            self.player.pause()
+            self.player.setPlaybackRate(self.rate_list[self.index])
+            self.player.play()
+
+    def accelerate(self):
+        if self.index < self.fastest_rate:
+            self.index += 1
+            self.player.pause()
+            self.player.setPlaybackRate(self.rate_list[self.index])
+            self.player.play()
 
 
 if __name__ == '__main__':  # 程序的入口
