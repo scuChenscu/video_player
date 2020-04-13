@@ -8,6 +8,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimediaWidgets
+from PyQt5.QtGui import QPalette, QBrush, QPixmap
 
 
 class Ui_video_player(object):
@@ -16,13 +17,20 @@ class Ui_video_player(object):
         video_player.resize(1280, 720)
         video_player.setMinimumSize(QtCore.QSize(1280, 720))
         video_player.setMaximumSize(QtCore.QSize(1280, 720))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("../ico/病毒.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        video_player.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(video_player)
         self.centralwidget.setObjectName("centralwidget")
         self.video_play_widget = QtMultimediaWidgets.QVideoWidget(self.centralwidget)
+        # self.video_play_widget = QtWidgets.QWidget(self.centralwidget)
         self.video_play_widget.setGeometry(QtCore.QRect(0, 0, 1071, 631))
         self.video_play_widget.setMinimumSize(QtCore.QSize(1071, 631))
         self.video_play_widget.setMaximumSize(QtCore.QSize(1071, 631))
         self.video_play_widget.setObjectName("video_play_widget")
+        # palette = QPalette()
+        # palette.setBrush(QPalette.Background, QBrush(QPixmap("../ico/landscape.jpg")))
+        # self.setPalette(palette)
         self.data_widget = QtWidgets.QTableWidget(self.centralwidget)
         self.data_widget.setGeometry(QtCore.QRect(1070, 0, 211, 701))
         self.data_widget.setMinimumSize(QtCore.QSize(211, 701))
@@ -110,6 +118,6 @@ class Ui_video_player(object):
 
     def retranslateUi(self, video_player):
         _translate = QtCore.QCoreApplication.translate
-        video_player.setWindowTitle(_translate("video_player", "MainWindow"))
+        video_player.setWindowTitle(_translate("video_player", "video_player"))
         self.now_timer_label.setText(_translate("video_player", "00:00"))
         self.whole_timer_label.setText(_translate("video_player", "00:00"))
